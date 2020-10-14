@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="nifi-asn1-processors" />
+        <module name="nifi-asn1-nar" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ASN1Processor" target="11" />
+      <module name="nifi-asn1-nar" target="11" />
+      <module name="nifi-asn1-processors" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

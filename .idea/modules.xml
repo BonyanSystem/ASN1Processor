@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ASN1Processor.iml" filepath="$PROJECT_DIR$/ASN1Processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nifi-asn1-nar/nifi-asn1-nar.iml" filepath="$PROJECT_DIR$/nifi-asn1-nar/nifi-asn1-nar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nifi-asn1-processors/nifi-asn1-processors.iml" filepath="$PROJECT_DIR$/nifi-asn1-processors/nifi-asn1-processors.iml" />
+    </modules>
+  </component>
+</project>

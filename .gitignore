@@ -1,0 +1,4 @@
+# Project exclude paths
+/nifi-asn1-nar/target/
+/nifi-asn1-processors/target/
+/target/

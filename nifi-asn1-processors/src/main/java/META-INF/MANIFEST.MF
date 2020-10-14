@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.bonyansystem.processors.asn1.Main
+
