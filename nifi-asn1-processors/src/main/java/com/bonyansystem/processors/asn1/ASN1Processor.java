@@ -74,6 +74,16 @@ public class ASN1Processor extends AbstractProcessor {
             .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
             .build();
 
+    public static final PropertyDescriptor BUFFER_SIZE = new PropertyDescriptor
+            .Builder().name("BUFFER_SIZE")
+            .displayName("Buffer Size")
+            .description("Disk read/write buffer size in kilobytes. Default=4")
+            .required(false)
+            .defaultValue("4")
+            .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+            .addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
+            .build();
+
     public static final Relationship SUCCESS = new Relationship.Builder()
             .name("Success")
             .description("Success relationship.")
@@ -89,6 +99,7 @@ public class ASN1Processor extends AbstractProcessor {
         descriptors.add(ITERATION_TAG);
         descriptors.add(CSV_SCHEMA);
         descriptors.add(DATA_TYPES);
+        descriptors.add(BUFFER_SIZE);
         this.descriptors = Collections.unmodifiableList(descriptors);
 
         final Set<Relationship> relationships = new HashSet<Relationship>();
@@ -117,7 +128,7 @@ public class ASN1Processor extends AbstractProcessor {
         if (flowFile == null) {
             return;
         }
-
+        int bufferSize = context.getProperty(BUFFER_SIZE).asInteger() * 1024;
         FlowFile csvFlowFile = session.create(flowFile);
 
         csvFlowFile = session.write(csvFlowFile, new OutputStreamCallback() {
@@ -127,8 +138,9 @@ public class ASN1Processor extends AbstractProcessor {
                     @Override
                     public void process(InputStream inputStream) throws IOException {
                         try {
-                            BufferedInputStream bis = new BufferedInputStream(inputStream);
-                            BufferedOutputStream bos = new BufferedOutputStream(outputStream);
+                            BufferedInputStream bis = new BufferedInputStream(inputStream, bufferSize);
+                            BufferedOutputStream bos = new BufferedOutputStream(outputStream, bufferSize);
+
                             ASN1CSVParser p = new ASN1CSVParser(bis,
                                     context.getProperty(ITERATION_TAG).toString(),
                                     context.getProperty(CSV_SCHEMA).toString(),
@@ -136,9 +148,13 @@ public class ASN1Processor extends AbstractProcessor {
 
                             p.parse(bos);
                         } catch (Exception e) {
+                            inputStream.close();
+                            outputStream.close();
+
                             throw new ProcessException(e.getMessage());
                         }
-
+                        inputStream.close();
+                        outputStream.close();
                     }
                 });
             }
