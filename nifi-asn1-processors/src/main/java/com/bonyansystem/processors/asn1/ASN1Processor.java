@@ -69,7 +69,7 @@ public class ASN1Processor extends AbstractProcessor {
     public static final PropertyDescriptor DATA_TYPES = new PropertyDescriptor
             .Builder().name("DATA_TYPES")
             .displayName("Data Types")
-            .description("Comma separated values the resembles each column data type.")
+            .description("Comma separated data types: TBCD_STRING, OCTET_STRING, IA5_STRING, IP_STRING, INTEGER, IPV6_STRING.")
             .required(true)
             .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
             .build();
@@ -79,6 +79,7 @@ public class ASN1Processor extends AbstractProcessor {
             .displayName("Buffer Size")
             .description("Disk read/write buffer size in kilobytes. Default=4")
             .required(false)
+            .allowableValues("1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024")
             .defaultValue("4")
             .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
             .addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
@@ -87,6 +88,11 @@ public class ASN1Processor extends AbstractProcessor {
     public static final Relationship SUCCESS = new Relationship.Builder()
             .name("Success")
             .description("Success relationship.")
+            .build();
+
+    public static final Relationship FAILURE = new Relationship.Builder()
+            .name("Failure")
+            .description("ASN.1 parse error relationship.")
             .build();
 
     private List<PropertyDescriptor> descriptors;
@@ -100,10 +106,12 @@ public class ASN1Processor extends AbstractProcessor {
         descriptors.add(CSV_SCHEMA);
         descriptors.add(DATA_TYPES);
         descriptors.add(BUFFER_SIZE);
+
         this.descriptors = Collections.unmodifiableList(descriptors);
 
         final Set<Relationship> relationships = new HashSet<Relationship>();
         relationships.add(SUCCESS);
+        relationships.add(FAILURE);
         this.relationships = Collections.unmodifiableSet(relationships);
     }
 
@@ -122,6 +130,53 @@ public class ASN1Processor extends AbstractProcessor {
 
     }
 
+    /*
+
+        @Override
+        public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
+            FlowFile flowFile = session.get();
+            if (flowFile == null) {
+                return;
+            }
+            int bufferSize = context.getProperty(BUFFER_SIZE).asInteger() * 1024;
+            FlowFile csvFlowFile = session.create(flowFile);
+
+            csvFlowFile = session.write(csvFlowFile, new OutputStreamCallback() {
+                @Override
+                public void process(OutputStream outputStream) throws IOException {
+                    session.read(flowFile, new InputStreamCallback() {
+                        @Override
+                        public void process(InputStream inputStream) throws IOException {
+                            try {
+                                BufferedInputStream bis = new BufferedInputStream(inputStream, bufferSize);
+                                BufferedOutputStream bos = new BufferedOutputStream(outputStream, bufferSize);
+
+                                ASN1CSVParser p = new ASN1CSVParser(bis,
+                                        context.getProperty(ITERATION_TAG).toString(),
+                                        context.getProperty(CSV_SCHEMA).toString(),
+                                        context.getProperty(DATA_TYPES).toString());
+
+                                p.parse(bos);
+                            } catch (Exception e) {
+                                session.transfer(flowFile, FAILURE);;
+
+                                inputStream.close();
+                                outputStream.close();
+
+                                throw new ProcessException(e.getMessage());
+                            }
+                            inputStream.close();
+                            outputStream.close();
+                        }
+                    });
+                }
+            });
+
+            session.transfer(csvFlowFile, SUCCESS);
+            session.remove(flowFile);
+            session.commit();
+        }
+    */
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         FlowFile flowFile = session.get();
@@ -131,51 +186,37 @@ public class ASN1Processor extends AbstractProcessor {
         int bufferSize = context.getProperty(BUFFER_SIZE).asInteger() * 1024;
         FlowFile csvFlowFile = session.create(flowFile);
 
-        csvFlowFile = session.write(csvFlowFile, new OutputStreamCallback() {
-            @Override
-            public void process(OutputStream outputStream) throws IOException {
-                session.read(flowFile, new InputStreamCallback() {
-                    @Override
-                    public void process(InputStream inputStream) throws IOException {
-                        try {
-                            BufferedInputStream bis = new BufferedInputStream(inputStream, bufferSize);
-                            BufferedOutputStream bos = new BufferedOutputStream(outputStream, bufferSize);
+        BufferedOutputStream bos = new BufferedOutputStream(session.write(csvFlowFile), bufferSize);
+        BufferedInputStream bis = new BufferedInputStream(session.read(flowFile), bufferSize);
 
-                            ASN1CSVParser p = new ASN1CSVParser(bis,
-                                    context.getProperty(ITERATION_TAG).toString(),
-                                    context.getProperty(CSV_SCHEMA).toString(),
-                                    context.getProperty(DATA_TYPES).toString());
 
-                            p.parse(bos);
-                        } catch (Exception e) {
-                            inputStream.close();
-                            outputStream.close();
+        ASN1CSVParser p = null;
+        try {
+            p = new ASN1CSVParser(bis,
+                    context.getProperty(ITERATION_TAG).toString(),
+                    context.getProperty(CSV_SCHEMA).toString(),
+                    context.getProperty(DATA_TYPES).toString());
+            p.parse(bos);
+            bis.close();
+            bos.close();
+            session.transfer(csvFlowFile, SUCCESS);
+            session.remove(flowFile);
+            session.commit();
 
-                            throw new ProcessException(e.getMessage());
-                        }
-                        inputStream.close();
-                        outputStream.close();
-                    }
-                });
+        } catch (Exception e) {
+            session.transfer(flowFile, FAILURE);
+            session.remove(csvFlowFile);
+            session.commit();
+        } finally{
+            try {
+                bis.close();
+                bos.close();
+            } catch (IOException e){
+                throw new ProcessException(e.getCause());
             }
-        });
+        }
 
-        session.transfer(csvFlowFile, SUCCESS);
-        session.remove(flowFile);
-        session.commit();
     }
 }
 
-/*
-try {
-    ASN1CSVParser p = new ASN1CSVParser(inputStream,
-            context.getProperty(ITERATION_TAG).toString(),
-            context.getProperty(CSV_SCHEMA).toString(),
-            context.getProperty(DATA_TYPES).toString());
 
-    p.parse(outputStream);
-} catch (Exception e) {
-    throw new ProcessException(e.getMessage());
-}
-
-* */

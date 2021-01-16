@@ -152,8 +152,12 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
                     decoded += String.format("%02X", b);
                 break;
             case TBCD_STRING:
-                for (byte b : data)//Convert signed byte to unsigned short by (& 0xff)
-                    decoded += Integer.toString((b & 0xff) & 0xf) + Integer.toString((b & 0xff)>>4);
+                for (byte b : data) { //Convert signed byte to unsigned short by (& 0xff)
+                    if(((b & 0xff) & 0xf) != 0xf)
+                        decoded += Integer.toString((b & 0xff) & 0xf);
+                    if((((b & 0xff)>>4) & 0xf) != 0xf)
+                        decoded += Integer.toString((b & 0xff)>>4);
+                }
                 break;
             case IA5_STRING:
                 decoded = "\"" + new String(data, StandardCharsets.UTF_8).replace("\"", "\"\"") + "\"";
@@ -168,6 +172,45 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
                         + Integer.toString(data[1] & 0xff) + "."
                         + Integer.toString(data[2] & 0xff) + "."
                         + Integer.toString(data[3] & 0xff);
+                break;
+            case IPV6_STRING:
+                if (data.length != 16)
+                    throw new Exception("Invalid IPV6_STRING length:" + data.length);
+                String buff = "";
+
+                for (byte b : data) //Convert signed byte to unsigned short by (& 0xff)
+                    buff += String.format("%02X", b);
+
+                int index = 8;
+                int[] s = new int[2];
+                for (int i=0; i<8; i++){
+                    int a1 = Integer.parseInt(String.valueOf(buff.charAt(index)) , 16);
+                    int a2 = Integer.parseInt(String.valueOf(buff.charAt(++index)), 16);
+                    int a3 = Integer.parseInt(String.valueOf(buff.charAt(++index)), 16);
+                    index++;
+
+                    int q = a2 / 4;
+                    int r = a2 % 4;
+                    s[0] = (4 * a1) + q; //q = a2 / 4;
+                    s[1] = (16 * r) + a3;//r = a2 % 4;
+
+                    for(int c : s){
+                        if(c >= 0 && c < 10){
+                            decoded += (char)(c + 48);
+                        }else if(c < 36){
+                            decoded += (char)(c + 55);
+                        }else if(c < 62){
+                            decoded += (char)(c + 61);
+                        }else if(c == 62){
+                            decoded += "!";
+                        }else if(c == 63) {
+                            decoded += "_";
+                        }else{
+                            throw new Exception("Invalid IPV6_STRING char value. index= " + index + " char= " + c);
+                        }
+                        buff += (char) c;
+                    }
+                }
                 break;
             default:
                 throw new Exception("Data type is invalid. dataType=" + dataType);

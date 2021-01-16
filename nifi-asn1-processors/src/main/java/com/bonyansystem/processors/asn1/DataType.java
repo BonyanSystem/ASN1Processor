@@ -5,5 +5,6 @@ public enum DataType {
     OCTET_STRING,
     IA5_STRING,
     IP_STRING,
-    INTEGER;
+    INTEGER,
+    IPV6_STRING;
 }

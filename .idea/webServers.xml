@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="238d6ead-9a8c-41b5-9a72-327e8aa2cd36" name="NiFi_15">
+        <fileTransfer rootFolder="/home/nifi/dowloads/nifi-1.11.4/lib" accessType="SFTP" host="192.168.137.15" port="22" sshConfigId="7b8ce1ab-004f-4343-81d4-7259bdb1b519" sshConfig="nifi@192.168.137.15:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

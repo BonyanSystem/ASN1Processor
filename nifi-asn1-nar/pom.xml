@@ -19,11 +19,11 @@
     <parent>
         <groupId>com.bonyansystem</groupId>
         <artifactId>ASN1Processor</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
     </parent>
 
     <artifactId>nifi-asn1-nar</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <packaging>nar</packaging>
     <properties>
         <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.bonyansystem</groupId>
             <artifactId>nifi-asn1-processors</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
     </dependencies>
 
