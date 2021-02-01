@@ -24,7 +24,7 @@
 
     <groupId>com.bonyansystem</groupId>
     <artifactId>ASN1Processor</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
     <packaging>pom</packaging>
 
     <modules>

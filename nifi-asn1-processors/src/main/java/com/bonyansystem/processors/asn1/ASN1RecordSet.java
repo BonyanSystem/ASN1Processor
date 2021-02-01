@@ -3,26 +3,40 @@ package com.bonyansystem.processors.asn1;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ASN1RecordSet extends ArrayList<byte[][]> {
-
-    private final String[] headers;
+    static Logger logger = Logger.getGlobal();
+    private final String[] headers; //column names and positions
+    private final Map<String, Integer> headersMap; //last cell filled in a column
     private final byte[][] masterRow;
     private final DataType[] dataTypes;
-    private final String iterationTag;
+    //private final String iterationTag;
     private final int columnCount;
+    private int iterateRecordSeq = 0;
 
-    public ASN1RecordSet(String recordSchema, String iterationTag, String schemaDataTypes) throws Exception {
+    public ASN1RecordSet(String recordSchema, /*String iterationTag,*/ String schemaDataTypes) throws Exception {
         this.headers = recordSchema.split(",");
-        this.iterationTag = iterationTag;
+        this.headersMap = new HashMap<String, Integer>();
+        for(String s : headers)
+            headersMap.put(s, 0);
         this.masterRow = new byte[headers.length][];
         this.columnCount = headers.length;
         this.dataTypes = new DataType[columnCount];
 
         setSchemaDataTypes(schemaDataTypes);
+    }
+
+    public void purge() {
+        Arrays.fill(masterRow, null );
+        for(Map.Entry<String, Integer> e : headersMap.entrySet() )
+            e.setValue(0);
+        iterateRecordSeq = 0;
+        this.clear();
     }
 
     public void setSchemaDataTypes(String schemaDataTypes) throws Exception {
@@ -43,11 +57,7 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
     }
 
     public boolean hasHeader(String header){
-        for (String s : headers) {
-            if (s.equals(header))
-                return true;
-        }
-        return false;
+        return headersMap.containsKey(header);
     }
 
     public void populateColumn(String header, byte[] value) throws Exception {
@@ -68,12 +78,23 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
     }
 
     public void populateIteratedCell(String tag, byte[] value) throws Exception {
-        int num = getHeaderNum(tag);
+        int currentCol = getHeaderNum(tag);
+        int currentRow = headersMap.get(tag);
+        if (currentRow + 1 > this.size())
+            addEmptyRow();
 
-        if(get(size() - 1)[num] == null)
-            get(size() - 1)[num] = value;
-        else
+        if(get(currentRow)[currentCol] == null){
+            get(currentRow)[currentCol] = value;
+            headersMap.replace(tag, ++currentRow);
+        }else
             throw new Exception("Trying to overwrite iterated cell.");
+    }
+
+    public void populateCell(String tag, byte[] value) throws Exception{
+        if (tag.contains("*")){
+            populateIteratedCell(tag, value);
+        }else
+            populateMasterCell(tag, value);
     }
 
     public String toString(){
@@ -90,8 +111,25 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
         return Arrays.toString(rows);
     }
 
-    public int buildRecords() throws Exception{
+    public int buildRecords(int initialRecordNum) throws Exception{
         if(size()==0) addEmptyRow();
+
+        if(hasHeader("SUB_SEQ")){
+            int colNum = getHeaderNum("SUB_SEQ");
+            for(Integer row=1; row<=this.size(); row++) {
+                byte[] val = ByteBuffer.allocate(4).putInt(row).array();
+                get(row - 1)[colNum] = val;
+            }
+        }
+        if(hasHeader("REC_NO")){
+            int colNum = getHeaderNum("REC_NO");
+            int recNo = initialRecordNum;
+            for(Integer row=1; row<=this.size(); row++) {
+                recNo += 1;
+                byte[] val = ByteBuffer.allocate(4).putInt(recNo).array();
+                get(row - 1)[colNum] = val;
+            }
+        }
         for(byte[][] row : this){
             for(int i=0; i<columnCount; i++){
                 if(masterRow[i] != null){
@@ -137,11 +175,8 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
 
     public void addEmptyRow(){
         add(new byte[headers.length][]);
-    }
-
-    public void purge() {
-        Arrays.fill(masterRow, null );
-        this.clear();
+        iterateRecordSeq++;
+        logger.info("iterateRecordSeq= " + iterateRecordSeq);
     }
 
     public String decodeData(byte[] data, DataType dataType) throws Exception {

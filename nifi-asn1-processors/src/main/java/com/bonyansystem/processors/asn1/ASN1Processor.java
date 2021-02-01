@@ -49,7 +49,7 @@ import java.util.Set;
 @ReadsAttributes({@ReadsAttribute(attribute = "", description = "")})
 @WritesAttributes({@WritesAttribute(attribute = "", description = "")})
 public class ASN1Processor extends AbstractProcessor {
-
+/*
     public static final PropertyDescriptor ITERATION_TAG = new PropertyDescriptor
             .Builder().name("ITERATION_TAG")
             .displayName("Iteration Tag")
@@ -57,11 +57,11 @@ public class ASN1Processor extends AbstractProcessor {
             .required(true)
             .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
             .build();
-
+*/
     public static final PropertyDescriptor CSV_SCHEMA = new PropertyDescriptor
             .Builder().name("CSV_SCHEMA")
             .displayName("CSV Schema")
-            .description("Comma separated values the resembles CSV schema.")
+            .description("Comma separated values the resembles CSV schema. \n Fixed values (INTEGER type): \n REC_NO: file record number. REC_SEQ: ASN.1 records seuqnce.")
             .required(true)
             .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
             .build();
@@ -102,7 +102,7 @@ public class ASN1Processor extends AbstractProcessor {
     @Override
     protected void init(final ProcessorInitializationContext context) {
         final List<PropertyDescriptor> descriptors = new ArrayList<PropertyDescriptor>();
-        descriptors.add(ITERATION_TAG);
+        //descriptors.add(ITERATION_TAG);
         descriptors.add(CSV_SCHEMA);
         descriptors.add(DATA_TYPES);
         descriptors.add(BUFFER_SIZE);
@@ -179,6 +179,7 @@ public class ASN1Processor extends AbstractProcessor {
     */
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
+        int recordCount = 0;
         FlowFile flowFile = session.get();
         if (flowFile == null) {
             return;
@@ -189,16 +190,16 @@ public class ASN1Processor extends AbstractProcessor {
         BufferedOutputStream bos = new BufferedOutputStream(session.write(csvFlowFile), bufferSize);
         BufferedInputStream bis = new BufferedInputStream(session.read(flowFile), bufferSize);
 
-
         ASN1CSVParser p = null;
         try {
             p = new ASN1CSVParser(bis,
-                    context.getProperty(ITERATION_TAG).toString(),
+                    /*context.getProperty(ITERATION_TAG).toString(),*/
                     context.getProperty(CSV_SCHEMA).toString(),
                     context.getProperty(DATA_TYPES).toString());
-            p.parse(bos);
+            recordCount = p.parse(bos);
             bis.close();
             bos.close();
+            csvFlowFile.getAttributes().put("RecordCount", Integer.toString(recordCount));
             session.transfer(csvFlowFile, SUCCESS);
             session.remove(flowFile);
             session.commit();

@@ -1,25 +1,26 @@
 package com.bonyansystem.processors.asn1;
 
 import java.io.*;
+import java.util.logging.Logger;
 
 public class ASN1CSVParser implements BERTags {
-
+    static Logger logger = Logger.getGlobal();
     private final BufferedInputStream inputStream;
-    private final String iterationTag;
     private final String schema;
     private final String schemaDataTypes;
     private ASN1RecordSet recordSet;
     private int level;
     private int pos = 1;
+    private String lastSequenceAddress = "";
+    private int recordSeq = 0;
 
     public ASN1CSVParser(BufferedInputStream bufferedInputStream,
-                         String iterationTag, String schema, String schemaDataTypes) throws Exception {
+                         String schema, String schemaDataTypes) throws Exception {
         this.inputStream = bufferedInputStream;
-        this.iterationTag = iterationTag;
         this.schema = schema;
         this.schemaDataTypes = schemaDataTypes;
 
-        recordSet = new ASN1RecordSet(schema, iterationTag, schemaDataTypes);
+        recordSet = new ASN1RecordSet(schema, schemaDataTypes);
     }
 
     public int parse(BufferedOutputStream bufferedOutputStream) throws Exception {
@@ -27,11 +28,9 @@ public class ASN1CSVParser implements BERTags {
         while (inputStream.available() > 0) {
             digIn("", 0, false);
 
-            recordCount += recordSet.buildRecords();
+            recordCount += recordSet.buildRecords(recordCount);
             recordSet.writeRecords(bufferedOutputStream);
-            //System.out.println(recordSet.toString());
             recordSet.purge();
-            //return;
         }
         return recordCount;
     }
@@ -75,30 +74,22 @@ public class ASN1CSVParser implements BERTags {
         int startPos = pos;
         int seq = 0;
         level++;
-
-        if(address.equals(iterationTag)) //Check if address is sequence counter for iteration tag
-            recordSet.addEmptyRow();
         while (pos < startPos + length) {
             seq++;
-            digIn(address, seq, address.equals(iterationTag) || iterationStarted);
+            digIn(address, seq, address.contains("*") || iterationStarted);
         }
-
         level--;
     }
 
     void readPrimitive(String address, int sequence, int level, int length, boolean isIterated) throws Exception {
         byte[] data = new byte[length];
         pos += length;
+
         if(inputStream.read(data) != length)
             throw new Exception("Corrupted data block. pos=" + pos);
 
-        if(isIterated){
-            if(recordSet.hasHeader(address))
-            recordSet.populateIteratedCell(address, data);
-        }else{
-            if (recordSet.hasHeader(address))
-                recordSet.populateMasterCell(address, data);
-        }
+        if(recordSet.hasHeader(address))
+            recordSet.populateCell(address, data);
     }
 
     int readTagNumber(int tag) throws IOException {

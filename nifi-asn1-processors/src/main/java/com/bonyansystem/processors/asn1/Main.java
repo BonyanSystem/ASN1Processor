@@ -6,6 +6,8 @@ import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /*
 Sample properties file:
 
@@ -14,13 +16,15 @@ Sample properties file:
         #Names are case-sensitive
 
         ITERATION_TAG=79.19.2.*
-        SCHEMA=79.0,79.5,79.22,79.3,79.13,79.19.2.*.1,79.19.2.*.2,79.19.2.*.5
+        SCHEMA=79.0,79.5,79.22,79.3,79.13,79.19.2.*.1,79.19.2.*.2,79.19.2.*.5,79.15.1.*.1
         DATA_TYPES=INTEGER,INTEGER,TBCD_STRING,TBCD_STRING,HEX_STRING,INTEGER,INTEGER,OCTET_STRING
  */
 
 public class Main {
 
+    static Logger logger = Logger.getGlobal();
     public static void main(String[] args) throws Exception {
+        logger.setLevel(Level.FINE);
         Instant start = Instant.now();
         if(args.length < 3) {
             System.out.println("USAGE: java -jar asn1parser.jar properties_file input_file output_file");
@@ -38,9 +42,6 @@ public class Main {
             prop.load(new FileInputStream(fileName));
             System.out.println("Properties file: " + fileName);
             //get the property value and print it out
-
-            if(!prop.stringPropertyNames().contains("ITERATION_TAG"))
-                throw new Exception("Missing property file item. ITERATION_TAG");
             if(!prop.stringPropertyNames().contains("SCHEMA"))
                 throw new Exception("Missing property file item. SCHEMA");
             if(!prop.stringPropertyNames().contains("DATA_TYPES"))
@@ -69,14 +70,13 @@ public class Main {
         try {
             ASN1CSVParser parser =
                     new ASN1CSVParser(bis,
-                            prop.getProperty("ITERATION_TAG"),
                             prop.getProperty("SCHEMA"),
                             prop.getProperty("DATA_TYPES"));
             recCount += parser.parse(bos);
-            System.out.println("Total csv record extracted: " + recCount);
+            logger.info("Total csv record extracted: " + recCount);
+            bos.close();
         }catch (Exception e){
             System.err.println(e);
         }
     }
-
 }
