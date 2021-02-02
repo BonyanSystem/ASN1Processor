@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.logging.Logger;
 
 public class ASN1CSVParser implements BERTags {
-    static Logger logger = Logger.getGlobal();
+    static Logger logger = Logger.getLogger("com.bonyansystem");
     private final BufferedInputStream inputStream;
     private final String schema;
     private final String schemaDataTypes;
@@ -32,6 +32,7 @@ public class ASN1CSVParser implements BERTags {
             recordSet.writeRecords(bufferedOutputStream);
             recordSet.purge();
         }
+        logger.info("Parse completed.");
         return recordCount;
     }
 

@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.bonyansystem</groupId>
         <artifactId>ASN1Processor</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
     </parent>
 
     <artifactId>nifi-asn1-nar</artifactId>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.bonyansystem</groupId>
             <artifactId>nifi-asn1-processors</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
         </dependency>
     </dependencies>
 
