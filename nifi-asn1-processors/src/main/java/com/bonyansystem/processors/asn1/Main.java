@@ -72,12 +72,10 @@ public class Main {
 
         initLogging(prop.getProperty("LOG_LEVEL"));
 
-        System.out.println("Input file: " + binaryFile.getAbsolutePath());
-        System.out.println("CSV file: " + csvFile.getAbsolutePath());
+        logger.info("Input file: " + binaryFile.getAbsolutePath());
+        logger.info("CSV file: " + csvFile.getAbsolutePath());
         OutputStream os = new FileOutputStream(csvFile, false);
         BufferedOutputStream bos = new BufferedOutputStream(os);
-
-        Logger.getGlobal().setLevel(Level.INFO);
 
         int recCount = 0;
         try {
@@ -89,7 +87,7 @@ public class Main {
             logger.info("Total csv record extracted: " + recCount);
             bos.close();
         }catch (Exception e){
-            System.err.println(e);
+            e.printStackTrace();
         }
     }
 

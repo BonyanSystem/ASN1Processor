@@ -6,5 +6,6 @@ public enum DataType {
     IA5_STRING,
     IP_STRING,
     INTEGER,
+    BOOLEAN,
     IPV6_STRING;
 }

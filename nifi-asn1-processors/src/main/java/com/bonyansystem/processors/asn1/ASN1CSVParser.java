@@ -42,21 +42,20 @@ public class ASN1CSVParser implements BERTags {
         int tagNo = readTagNumber(tag);
         int length = readLength(inputStream, 99999, true);
         String currentAddress = parentAddress + (parentAddress.length()==0?"":".") + tagNo;
-        String currentAddressHex = parentAddress + (parentAddress.length() == 0 ? "" : ".") + String.format("%02X", tag);
+
         boolean isConstructed = (tag & CONSTRUCTED) != 0;// PRIMITIVE or CONSTRUCTED
         if (isConstructed) {
             switch (tag & 0xC0) {
                 case UNIVERSAL:
                     switch (tagNo) {
                         case SEQUENCE:
-                            parseDefiniteBlock(length, parentAddress + (parentAddress.length()==0?"":".") + "*",
-                                    isIterationTag);
+                            parseDefiniteBlock(length, parentAddress + (parentAddress.length()==0?"":".") + "*");
                             return tagNo;
                         default:
                             throw new Exception("UNIVERSAL data type is invalid.");
                     }
                 case TAGGED:
-                    parseDefiniteBlock(length, currentAddress, isIterationTag);
+                    parseDefiniteBlock(length, currentAddress);
                     return tagNo;
                 case APPLICATION:
                     throw new Exception("Tag APPLICATION is not defined in this context.");
@@ -66,28 +65,30 @@ public class ASN1CSVParser implements BERTags {
             throw new IOException("Invalid tag");
 
         } else {//TAG is primitive
-            readPrimitive(currentAddress, parentSequence, level, length, isIterationTag);
+            readPrimitive(currentAddress, length);
             return tagNo;
         }
     }
 
-    private void parseDefiniteBlock(int length, String address, boolean iterationStarted) throws Exception {
+    private void parseDefiniteBlock(int length, String address) throws Exception {
         int startPos = pos;
         int seq = 0;
         level++;
         while (pos < startPos + length) {
             seq++;
-            digIn(address, seq, address.contains("*") || iterationStarted);
+            digIn(address, seq, address.contains("*"));
+            if(address.contains("*"))
+                logger.finest("Address: " + address + "  Sequence: " + seq);
         }
         level--;
     }
 
-    void readPrimitive(String address, int sequence, int level, int length, boolean isIterated) throws Exception {
+    void readPrimitive(String address, int length) throws Exception {
         byte[] data = new byte[length];
         pos += length;
 
         if(inputStream.read(data) != length)
-            throw new Exception("Corrupted data block. pos=" + pos);
+            throw new Exception("Corrupted data block. pos: " + pos);
 
         if(recordSet.hasHeader(address))
             recordSet.populateCell(address, data);

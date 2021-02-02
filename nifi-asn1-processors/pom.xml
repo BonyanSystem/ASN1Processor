@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.bonyansystem</groupId>
         <artifactId>ASN1Processor</artifactId>
-        <version>1.6</version>
+        <version>1.7</version>
     </parent>
 
     <artifactId>nifi-asn1-processors</artifactId>
