@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
-      <paths name="NiFi_15">
+      <paths name="NiFi_10.19.68.201">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$/nifi-asn1-nar/target/" web="/" />

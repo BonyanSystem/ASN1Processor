@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig authType="PASSWORD" host="192.168.137.15" id="7b8ce1ab-004f-4343-81d4-7259bdb1b519" port="22" nameFormat="DESCRIPTIVE" username="nifi" />
+      <sshConfig authType="PASSWORD" host="10.19.68.201" id="7b8ce1ab-004f-4343-81d4-7259bdb1b519" port="22" customName="NiFi_10.19.68.201" nameFormat="CUSTOM" username="root" />
     </configs>
   </component>
 </project>
