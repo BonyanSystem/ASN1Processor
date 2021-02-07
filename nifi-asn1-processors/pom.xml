@@ -19,11 +19,11 @@
     <parent>
         <groupId>com.bonyansystem</groupId>
         <artifactId>ASN1Processor</artifactId>
-        <version>1.8-SNAPSHOT</version>
+        <version>1.8</version>
     </parent>
 
     <artifactId>nifi-asn1-processors</artifactId>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.8</version>
     <packaging>jar</packaging>
 
     <build>
@@ -75,4 +75,8 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+  <scm>
+    <tag>v1.8</tag>
+  </scm>
 </project>
