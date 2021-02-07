@@ -197,7 +197,7 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
         for (byte[][] row : this) {
             str = "";
             for (int i = 0; i < columnCount; i++) {
-                str += (str.length() == 0 ? "" : ",");
+                str += (i==0 ? "" : ",");
                 if (row[i] != null) {
                     str += decodeData(row[i], dataTypes[i]);
                 } else

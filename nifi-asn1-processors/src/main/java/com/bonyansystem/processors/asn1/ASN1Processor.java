@@ -187,7 +187,7 @@ public class ASN1Processor extends AbstractProcessor {
             session.remove(csvFlowFile);
             session.commit();
             throw new ProcessException(e.getCause());
-        } finally{
+        } finally {
             try {
                 bis.close();
                 bos.close();
@@ -195,7 +195,6 @@ public class ASN1Processor extends AbstractProcessor {
                 throw new ProcessException(e.getCause());
             }
         }
-
     }
 }
 
