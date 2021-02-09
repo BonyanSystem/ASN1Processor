@@ -16,13 +16,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>nifi-asn1-processors</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.bonyansystem</groupId>
         <artifactId>ASN1Processor</artifactId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9</version>
     </parent>
 
 
@@ -79,7 +79,7 @@
     <scm>
         <connection>scm:git:ssh://saeedmkh@github.com/BonyanSystem/ASN1Processor</connection>
         <developerConnection>scm:git:ssh://saeedmkh@github.com/BonyanSystem/ASN1Processor</developerConnection>
-        <tag>v1.8</tag>
+        <tag>v1.9</tag>
         <url>http://github.com/BonyanSystem/ASN1Processor/</url>
     </scm>
 </project>
