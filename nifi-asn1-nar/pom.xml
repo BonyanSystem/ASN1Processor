@@ -19,11 +19,11 @@
     <parent>
         <groupId>com.bonyansystem</groupId>
         <artifactId>ASN1Processor</artifactId>
-        <version>1.10-SNAPSHOT</version>
+        <version>1.10</version>
     </parent>
 
     <artifactId>nifi-asn1-nar</artifactId>
-    <version>1.10-SNAPSHOT</version>
+    <version>1.10</version>
     <packaging>nar</packaging>
     <properties>
         <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -41,7 +41,7 @@
     <scm>
         <connection>scm:git:git@github.com:saeedmkh/BonyanSystem/ASN1Processor</connection>
         <developerConnection>scm:git:git@github.com:saeedmkh/BonyanSystem/ASN1Processor</developerConnection>
-        <tag>v1.8</tag>
+        <tag>v1.10</tag>
         <url>http://github.com/BonyanSystem/ASN1Processor/</url>
     </scm>
 </project>
