@@ -39,8 +39,8 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:ssh://saeedmkh@github.com/BonyanSystem/ASN1Processor</connection>
-        <developerConnection>scm:git:ssh://saeedmkh@github.com/BonyanSystem/ASN1Processor</developerConnection>
+        <connection>scm:git:git@github.com:saeedmkh/BonyanSystem/ASN1Processor</connection>
+        <developerConnection>scm:git:git@github.com:saeedmkh/BonyanSystem/ASN1Processor</developerConnection>
         <tag>v1.8</tag>
         <url>http://github.com/BonyanSystem/ASN1Processor/</url>
     </scm>

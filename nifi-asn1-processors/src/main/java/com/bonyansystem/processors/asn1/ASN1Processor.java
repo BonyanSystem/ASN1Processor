@@ -53,7 +53,7 @@ public class ASN1Processor extends AbstractProcessor {
     public static final PropertyDescriptor CSV_SCHEMA = new PropertyDescriptor
             .Builder().name("CSV_SCHEMA")
             .displayName("CSV Schema")
-            .description("Comma separated values the resembles CSV schema. Fixed values (INTEGER type): REC_NO: file record number. SUB_SEQ: ASN.1 records sequence.\r\n" +
+            .description("Comma separated values the resembles CSV schema. Fixed values (INTEGER type): REC_NO: file record number. SUB_SEQ: ASN.1 records sequence. MULTI_RECORD: 1 if is multi record otherwise 0 (INTEGER)\r\n" +
                     "Master record value: 79.12.5 repeats 79.12.5 in all records. Sequence columns e.g.: 79.13.*.1 iterate records by 79.13.*.1 occurrence count. \r\n" +
                     "Explicit sequence e.g.: 79.13.*[0].1 repeat first occurrence of 79.13.*.1 in all records.")
             .required(true)

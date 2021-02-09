@@ -157,6 +157,16 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
                     get(row - 1)[colNum] = val;
                 }
             }
+
+            if (hasHeader("MULTI_RECORD")){
+                int colNum = getHeaderNum("MULTI_RECORD");
+                int isMultiRecord = size() > 1 ? 1 : 0;
+                byte[] val = ByteBuffer.allocate(4).putInt(isMultiRecord).array();
+
+                for (Integer row = 1; row <= this.size(); row++) {
+                    get(row - 1)[colNum] = val;
+                }
+            }
         } catch (Exception e) {
             throw new Exception("Error populating ID columns");
         }
