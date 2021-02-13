@@ -50,7 +50,7 @@
     <scm>
         <connection>scm:git:git@github.com:saeedmkh/BonyanSystem/ASN1Processor</connection>
         <developerConnection>scm:git:git@github.com:saeedmkh/BonyanSystem/ASN1Processor</developerConnection>
-        <tag>v1.9</tag>
+        <tag>v@{project.version}</tag>
         <url>http://github.com/BonyanSystem/ASN1Processor/</url>
     </scm>
 </project>
