@@ -11,9 +11,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="ASN1Processor" target="11" />
-      <module name="nifi-asn1-nar" target="11" />
-      <module name="nifi-asn1-processors" target="11" />
+      <module name="ASN1Processor" target="8" />
+      <module name="nifi-asn1-nar" target="8" />
+      <module name="nifi-asn1-processors" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
