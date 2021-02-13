@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -8,7 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="nifi-asn1-processors" />
+    <orderEntry type="library" name="Maven: com.bonyansystem:nifi-asn1-processors:2.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.nifi:nifi-utils:1.11.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.nifi:nifi-api:1.11.4" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.0" level="project" />
