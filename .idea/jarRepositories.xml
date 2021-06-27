@@ -27,6 +27,11 @@
       <option name="url" value="https://repository.apache.org/content/repositories/releases" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="Shibboleth" />
+      <option name="name" value="Shibboleth" />
+      <option name="url" value="https://build.shibboleth.net/nexus/content/repositories/releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />

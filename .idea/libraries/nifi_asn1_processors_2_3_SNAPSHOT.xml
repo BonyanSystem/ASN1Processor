@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="nifi-asn1-processors-2.3-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/nifi-asn1-processors/target/nifi-asn1-processors-2.3-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

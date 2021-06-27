@@ -6,7 +6,7 @@
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$/nifi-asn1-nar/target/" web="/" />
-            <mapping local="" />
+            <mapping deploy="/" local="$PROJECT_DIR$/nifi-asn1-processors/target" web="/" />
           </mappings>
         </serverdata>
       </paths>

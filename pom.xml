@@ -34,11 +34,11 @@
     <parent>
         <groupId>org.apache.nifi</groupId>
         <artifactId>nifi-nar-bundles</artifactId>
-        <version>1.11.4</version>
+        <version>1.13.2</version>
     </parent>
     <groupId>com.bonyansystem</groupId>
     <artifactId>ASN1Processor</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.3</version>
 
     <packaging>pom</packaging>
 

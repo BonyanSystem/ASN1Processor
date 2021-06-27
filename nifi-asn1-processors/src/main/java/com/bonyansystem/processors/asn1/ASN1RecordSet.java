@@ -252,7 +252,9 @@ public class ASN1RecordSet extends ArrayList<byte[][]> {
                 }
                 break;
             case IA5_STRING:
-                decoded = "\"" + new String(data, StandardCharsets.UTF_8).replace("\"", "\"\"") + "\"";
+                decoded = "\"" + new String(data, StandardCharsets.UTF_8)
+                        .replace("\\", "\\\\")
+                        .replace("\"", "\\\"") + "\"";
                 break;
             case INTEGER:
                 decoded = new BigInteger(data).toString();
